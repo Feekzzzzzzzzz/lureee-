@@ -1,0 +1,202 @@
+[gd_scene load_steps=19 format=2]
+
+[ext_resource path="res://Fishing object/player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Fishing object/Fish.tscn" type="PackedScene" id=2]
+[ext_resource path="res://FishingDock.gd" type="Script" id=3]
+[ext_resource path="res://fish/4 Icons/Icons_01.png" type="Texture" id=4]
+[ext_resource path="res://fish/4 Icons/Icons_03.png" type="Texture" id=5]
+[ext_resource path="res://Untitled design (2)-Photoroom.png" type="Texture" id=6]
+[ext_resource path="res://fish/3 Objects/Fishing_hut.png" type="Texture" id=7]
+[ext_resource path="res://HealthBar.gd" type="Script" id=8]
+[ext_resource path="res://icon.png" type="Texture" id=9]
+[ext_resource path="res://Fishing object/Fish_species1.tscn" type="PackedScene" id=10]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.172549, 0.709804, 1, 1 )
+
+[sub_resource type="Animation" id=2]
+resource_name = "Cast"
+tracks/0/type = "value"
+tracks/0/path = NodePath("YSort/Players/Hook:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 54.922, 480 ) ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "Hook"
+length = 1.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("YSort/Players/Hook:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 54.922, 430 ), Vector2( 57.918, 99.178 ) ]
+}
+
+[sub_resource type="Animation" id=4]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("YSort/Players/Hook:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 57.9177, 99.5409 ) ]
+}
+
+[sub_resource type="StyleBoxFlat" id=6]
+bg_color = Color( 0.654902, 0.67451, 0.729412, 1 )
+border_width_left = 1
+border_width_right = 1
+border_color = Color( 0.145098, 0.0745098, 0.101961, 1 )
+
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 3.99433, 3.04152 )
+
+[sub_resource type="Shader" id=7]
+code = "shader_type canvas_item;
+
+uniform vec2 scale;
+uniform float y_zoom;
+
+void fragment()
+{
+	float uv_height = SCREEN_PIXEL_SIZE.y / TEXTURE_PIXEL_SIZE.y;
+	vec2 reflected_screenuv = vec2(SCREEN_UV.x , SCREEN_UV.y + uv_height * UV.y * scale.y * y_zoom * 2.0);
+	
+	COLOR = texture(SCREEN_TEXTURE, reflected_screenuv);
+}"
+
+[sub_resource type="ShaderMaterial" id=8]
+shader = SubResource( 7 )
+shader_param/scale = Vector2( 7.50586, 4.00586 )
+shader_param/y_zoom = null
+
+[node name="FishingDock" type="Node2D"]
+script = ExtResource( 3 )
+
+[node name="Panel" type="Panel" parent="."]
+margin_left = 1.0
+margin_right = 1027.0
+margin_bottom = 600.0
+custom_styles/panel = SubResource( 1 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="FishingHut" type="Sprite" parent="."]
+position = Vector2( 197.432, 167.423 )
+scale = Vector2( 2.03717, 1.8783 )
+texture = ExtResource( 7 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/Cast = SubResource( 2 )
+anims/Hook = SubResource( 3 )
+anims/RESET = SubResource( 4 )
+
+[node name="YSort" type="YSort" parent="."]
+position = Vector2( 1, 3 )
+scale = Vector2( 0.485755, 0.765165 )
+
+[node name="Players" parent="YSort" instance=ExtResource( 1 )]
+position = Vector2( 763.76, 112.394 )
+scale = Vector2( 2.06157, 1.18164 )
+
+[node name="String" type="Panel" parent="YSort/Players"]
+margin_left = 53.9233
+margin_top = 77.4209
+margin_right = 58.9233
+margin_bottom = 89.4209
+custom_styles/panel = SubResource( 6 )
+
+[node name="Hook" type="Area2D" parent="YSort/Players"]
+position = Vector2( 57.9177, 99.5409 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="YSort/Players/Hook"]
+position = Vector2( 0, 12.1661 )
+shape = SubResource( 5 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="UntitledDesign(2)-Photoroom" type="Sprite" parent="YSort/Players/Hook"]
+scale = Vector2( 0.346372, 0.32479 )
+texture = ExtResource( 6 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Fish" parent="YSort" instance=ExtResource( 2 )]
+visible = false
+position = Vector2( -195.572, 402.528 )
+scale = Vector2( 1.92249, 1.01971 )
+speed = 55
+
+[node name="Fish_species1" parent="YSort" instance=ExtResource( 10 )]
+visible = false
+position = Vector2( 47.349, 418.21 )
+
+[node name="Camera2D" type="Camera2D" parent="YSort"]
+position = Vector2( 990.211, 321.499 )
+scale = Vector2( 2.05865, 1.30691 )
+zoom = Vector2( 0.9, 0.9 )
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Reel" type="Button" parent="UI"]
+margin_left = 806.0
+margin_top = 426.0
+margin_right = 880.0
+margin_bottom = 464.0
+text = "Reel"
+icon = ExtResource( 4 )
+
+[node name="Cast" type="Button" parent="UI"]
+margin_left = 806.0
+margin_top = 427.0
+margin_right = 879.0
+margin_bottom = 465.0
+text = "Cast"
+icon = ExtResource( 5 )
+
+[node name="HealthBar" type="ProgressBar" parent="UI"]
+margin_left = 768.0
+margin_top = 12.0
+margin_right = 927.0
+margin_bottom = 26.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_colors/font_color_shadow = Color( 0.533333, 0.219608, 0.219608, 1 )
+value = 100.0
+script = ExtResource( 8 )
+
+[node name="Spawn" type="Timer" parent="."]
+wait_time = 1.5
+autostart = true
+
+[node name="Sea" type="Sprite" parent="."]
+material = SubResource( 8 )
+position = Vector2( 295, 353 )
+scale = Vector2( 7.50586, 4.00586 )
+texture = ExtResource( 9 )
+
+[connection signal="body_entered" from="YSort/Players/Hook" to="." method="_on_Hook_body_entered"]
+[connection signal="pressed" from="UI/Reel" to="." method="_on_Reel_pressed"]
+[connection signal="pressed" from="UI/Cast" to="." method="_on_Cast_pressed"]
+[connection signal="timeout" from="Spawn" to="." method="_on_Spawn_timeout"]
+[connection signal="item_rect_changed" from="Sea" to="Sea" method="_on_Sea_item_rect_changed"]
